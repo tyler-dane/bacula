@@ -1,23 +1,17 @@
 bacula-install-server.md
 
-#### Author: Ty Hitzeman (TO-DO: add GitHub URL, Twitter)
-#### Last modified: [TO-DO: figure out how to automatically populate this field with current date]
-
-### TO-DO BEFORE POSTING:
+#### Author: [Tyler Hitzeman](https://github.com/tyler-hitzeman)
+#### Last modified: 
+### TO-DO:
 * Finish:
     * Diagram of configs
     * Full example configurations
-    * both server and client.md files
-    * Video
-* Look through other To-Dos, Note-to-Selfs in document
 * Update Table of Contents
-* Remove sections that are too specific to Swoop environment (IPA)
+* Remove sections that are too specific
 * Recommend people also check out the two DigitalOcean guides
-* Note that this is for Bacula version 9.x on CentOS7
 * Note that there is only one Bacula server in this architecture
 * Explain how this architecture (diff pool/client) differs from BlueOceans
 * Note that its best to monitor system for at least a month before putting it into production so that you can tweak file sets and test monthly backup. It's also difficult to REDUCE the disk space that your backups take if the first file sets are restrictive enough for you needs.
-* Reach out to Blue Ocean and see if they're OK with your shameless copywriting
 * Custom Commands used to install & configure Bacula - (new command) (wtf??) 
 * Look into PostgreSQL security - skipped everything after .5 in 
 http://www.bacula.org/9.0.x-manuals/en/main/Installing_Configuring_Post.html
