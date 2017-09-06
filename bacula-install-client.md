@@ -1,6 +1,3 @@
-### To-Do:
-* Eliminate all hostnames (Jenkins, Accumulo, etc)
-
 ## TABLE OF CONTENTS
 * Notes
 * Set up Basic Environment
