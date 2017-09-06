@@ -1,5 +1,12 @@
 bacula-troubleshooting.md
 
+## TABLE OF CONTENTS
+
+## TO-DO
+* Format document
+* Finish T.O.C
+
+
 #
 ### BACULUM GUI TROUBLESHOOTING
 #### Problem: Can't sign in via hostname:9095
@@ -86,13 +93,13 @@ su postgres
 
 #### PostgreSQL authentication errors when checking `bacula-dir.conf` syntax with `./bacula-dir -t -c bacula-dir.conf`
 ```bash
-[root@bacula-test1 bin]# ./bacula-dir -t -c bacula-dir.conf
+[root@server.example bin]# ./bacula-dir -t -c bacula-dir.conf
 bacula-dir: dird.c:1152-0 Could not open Catalog "MyCatalog", database "bacula".
 bacula-dir: dird.c:1157-0 postgresql.c:309 Unable to connect to PostgreSQL server. Database=bacula User=bacula
 Possible causes: SQL server not running; password incorrect; max_connections exceeded.
 01-Aug 08:21 bacula-dir ERROR TERMINATION
 Please correct configuration file: bacula-dir.conf
-[root@bacula-test1 bin]# ./bacula-dir -t -c bacula-dir.conf
+[root@server.example bin]# ./bacula-dir -t -c bacula-dir.conf
 bacula-dir: dird.c:1152-0 Could not open Catalog "MyCatalog", database "bacula".
 bacula-dir: dird.c:1157-0 postgresql.c:309 Unable to connect to PostgreSQL server. Database=bacula User=bacula
 Possible causes: SQL server not running; password incorrect; max_connections exceeded.
@@ -209,7 +216,7 @@ bacula-dir -c /opt/bacula/etc/bacula-dir.conf -d100
 * **Other possible causes**: Password mismatch
     * See Diagram (TO-DO: link to where this should be). 
 
-#### Problem3: "Error: bsock.c:223 gethostbyname() for host "database-test.swoop.local" failed: ERR=Name or service not known"
+#### Problem3: "Error: bsock.c:223 gethostbyname() for host "client.example.local" failed: ERR=Name or service not known"
 * Possible Cause/Solution: Make sure your FQDN is spelled correctly in the Bacula configs and in your own environment.  
         
 #### Problem4: Authentication error when connecting to bconsole:
@@ -241,7 +248,7 @@ Please use the "label" command to create a new Volume for:
 #### `bconsole` `label` ERROR:
 ##### Error: 
 ```
-Connecting to Storage daemon HPDrives at bacula-test1.swoop.local:9103 ...
+Connecting to Storage daemon HPDrives at server.example.local:9103 ...
 Sending label command for Volume "TestVol1" Slot 0 ...
 3999 Device "FileStorage" not found or could not be opened.
 Label command failed for Volume TestVol1.

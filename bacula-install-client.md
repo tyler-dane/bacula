@@ -1,12 +1,16 @@
 ## TABLE OF CONTENTS
-* Notes
-* Set up Basic Environment
-* Install Bacula
-* Configure Environment
-* Troubleshooting
-* Example Outputs
+* NOTES
+* SET UP BACULA ENVIRONMENT
+* INSTALL BACULA
+* CONFIGURE **CLIENT'S** BACULA-FD
+* CONFIGURE **CLIENT'S** **bacula-fd.conf**
+* PREPARE THE BACULA **SERVER**
+* TROUBLESHOOTING
+* EXAMPLE OUTPUTS
 
-#### Notes
+
+#
+## Notes
 * If you already installed an older version of Bacula, be sure to uninstall it; there can only be one instance of Bacula on a client. 
   * `yum remove bacula-client`
 * This process has been tested on the following systems:
@@ -14,17 +18,7 @@
   * Red Hat 7.3, 7.4
 * The commands are listed with the assumption that you are signed in as *root*. If that is not possible, try using `sudo` before each command.
 * As a prerequisite, I recommend generating a list of files and directories (**FileSets**, in Bacula terminology) you would like to backup. Verify that the size of all your files is acceptable. Doing this ahead of time will make the install process smoother in the long run. 
-
-#### References:
-[Digital Ocean - How to Install Bacula Server on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-install-bacula-server-on-centos-7)
-
-[bacula-install-server.md] (TO-DO: ADd link).
-* Install the Bacula on a server before adding a client. Follow the above two links for instructions on doing so. 
-
-[Digital Ocean - How to Backup a CentOS 7 Server with Bacula](
-https://www.digitalocean.com/community/tutorials/how-to-back-up-a-centos-7-server-with-bacula)
-
-
+#
 ## SET UP BASIC ENVIRONMENT
 #### FQDN:
 If your client doesn't already have a Fully Qualified Domain Name (FQDN), assign it one. I use client.example.local in this tutorial. 
@@ -52,7 +46,7 @@ firewall-cmd --list-ports
 
 #### Make directory where the Bacula Server can restore files:
 `mkdir -p /bacula/restore`
-
+#
 ## INSTALL BACULA
 
 #### Install Bacula binarires
@@ -93,8 +87,8 @@ make install
 make install-autostart-fd
 ```
 * This creates symlinks to start the Bacula File-Daemon (FD) on boot
-
-## ON BACULA **CLIENT** - CONFIGURE BACULA-FD
+#
+## CONFIGURE **CLIENT'S** BACULA-FD
 
 #### If no errors, start the daemon and confirm it's running
 `service bacula-fd start`
@@ -120,8 +114,8 @@ restorecon -R -v /bacula/restore/
 ```
 #### Copy password from bacula-fd.conf
 * Keep this password handy - you will need when configuring the **Server** to connect with your new **Client**. 
-
-## CONFIGURE **bacula.fd.conf** ON THE **CLIENT**
+#
+## CONFIGURE **CLIENT'S** **bacula-fd.conf**
 `vim /opt/etc/bacula/bacula-fd.conf`
 * *Important*: Change `Director { [..] Name =` to FQDN of client for the Director and Tray Monitor
 * Note: FQDN does not necessarily equate to the server's hostname. It seems like Bacula places the hostname there by default when installing. Not updating the field to reflect the FQDN might lead to connection errors (see **Troubleshooting** section below for more information).
@@ -137,7 +131,7 @@ Messages {
 }
 ```
 * Change director name to `hostname + -dir` so logs can be sent to Server
-
+#
 ## PREPARE THE BACULA **SERVER**
 * Those are all the steps that you should need to take on the new **Client**. There are a number of **Server** config changes that will be required, however. An overview of those changes are listed in this file, but you should refer to the **ADD A CLIENT** section in: [bacula-install-server.md] (link) for step-by-step instructions.
 
@@ -146,17 +140,18 @@ Messages {
 
 `vim /opt/bacula/etc/conf.d/clients.conf`
 
-## ON BACULA **SERVER** - UPDATE THE *clients.conf* FILE:
+### ON BACULA **SERVER** - UPDATE THE *clients.conf* FILE:
 `vim /opt/bacula/etc/conf.d/clients.conf`
 
-## ON BACULA **SERVER** - UPDATE the *pools.conf*
+### ON BACULA **SERVER** - UPDATE the *pools.conf*
 `vim /opt/bacula/etc/conf.d/pools.conf`
 
-## EDIT *bacula-fd.conf* FILE
+### EDIT **SERVER'S** *bacula-fd.conf* FILE
 `vim /opt/bacula/etc/bacula-fd.conf`
 
 ### After troubleshooting any issues, continue following instructions listed in `bacula-install-server.md`.
 
+#
 ## TROUBLESHOOTING
 #### Problem 1: `make` error:
 ```
@@ -255,7 +250,7 @@ Configuration on Sat Aug  5 00:57:53 CDT 2017:
 * Note: This should be run after `./setup.sh`
 
 ```
-[root@accumulo bacula-9.0.1]# make
+[root@client.example-9.0.1]# make
 ==>Entering directory /usr/src/bacula-9.0.1/src
 make[1]: Entering directory `/usr/src/bacula-9.0.1/src'
 make[1]: Nothing to be done for `all'.
@@ -424,7 +419,7 @@ make[1]: Leaving directory `/usr/src/bacula-9.0.1/manpages'
 `make install`
 * Note: This should be run after `make`
 ```
-[root@jenkins-new bacula-9.0.3]# make install
+[root@client.example bacula-9.0.3]# make install
 ./autoconf/mkinstalldirs /sbin
 ./autoconf/mkinstalldirs /etc/bacula
 mkdir -p -- /etc/bacula
@@ -541,7 +536,7 @@ make[1]: Leaving directory `/tmp/bacula-9.0.3/manpages'
 `make install-autostart-fd`
 * Note: This should be run after `make install`
 ```
-[root@jenkins-new bacula-9.0.3]# make install-autostart-fd
+[root@client.example bacula-9.0.3]# make install-autostart-fd
 (cd platforms && make DESTDIR= install-autostart-fd || exit 1)
 make[1]: Entering directory `/tmp/bacula-9.0.3/platforms'
 make[2]: Entering directory `/tmp/bacula-9.0.3/platforms/redhat'

@@ -1,29 +1,40 @@
 bacula-install-server.md
 
-#### Author: [Tyler Hitzeman](https://github.com/tyler-hitzeman)
-#### Last modified: 
+## Table of Contents
+* TO-DOs
+* NOTES
+* SET UP THE SERVER ENVIRONMENT
+* SET UP THE BACULA ENVIRONMENT
+* INSTALL BACULA
+* CONFIGURE POSTGRESQL
+* CONFIGURE **bacula-dir.conf**	
+* CONFIGURE **bacula-sd.conf**
+* START & ENABLE COMPONENTS
+* TEST CONSOLE FUNCTIONALITY
+* TEST LOCAL BACKUP & RESTORE
+* INSTALL & CONFIGURE CLIENT 
+* ADD FILE SETS (ON SERVER)
+* ADD CLIENT RESOURCE
+* TEST SERVER-CLIENT CONNECTION
+* TEST BACKUP JOB FOR CLIENT
+* TEST RESTORE OPERATION FOR CLIENT
+* OPTIONAL: INSTALL BACULUM GUI
+
+#
 ### TO-DO:
 * Finish:
     * Diagram of configs
     * Full example configurations
 * Update Table of Contents
 * Remove sections that are too specific
-* Recommend people also check out the two DigitalOcean guides
 * Note that there is only one Bacula server in this architecture
-* Explain how this architecture (diff pool/client) differs from BlueOceans
 * Note that its best to monitor system for at least a month before putting it into production so that you can tweak file sets and test monthly backup. It's also difficult to REDUCE the disk space that your backups take if the first file sets are restrictive enough for you needs.
-* Custom Commands used to install & configure Bacula - (new command) (wtf??) 
-* Look into PostgreSQL security - skipped everything after .5 in 
+* Look into PostgreSQL security in 
 http://www.bacula.org/9.0.x-manuals/en/main/Installing_Configuring_Post.html
-* check the value of max_connections in your PostgreSQL configuration file to
-ensure that it is larger than the setting Maximum Concurrent Jobs in your 
-director configuration. Setting this too low will result in some 
-backup jobs failing to run correctly!
-
 ## NOTES
-* CentOS 7.4 , RedHat 7.4
+* These steps were tested on CentOS 7.4 and RedHat 7.4 systems.
 * I use `vim`, but feel free to install and use whatever editor you like
-* I use PostgreSQL 9.6.3 as my database, but you can also MySQL
+* I use **PostgreSQL 9.6.3** as my database, but you can also **MySQL**
 * The whitespace used in the YAML .conf files is different in Bacula version 9 as it is in version 5.5 (the version included in many package managers at the time of this writing), so be sure to adjust according to the version 9 standards if you copy and past from older versions. 
 
 ## SET UP THE SERVER ENVIRONMENT
@@ -71,7 +82,7 @@ firewall-cmd --reload
 * If your client doesn't already have a Fully Qualified Domain Name (FQDN), assign it one.
 *  I use server.example.local in this tutorial. 
 
-## SET UP BACULA ENVIRONMENT
+## SET UP THE BACULA ENVIRONMENT
 #### Create Bacula user:
 ```bash
 useradd bacula
@@ -287,7 +298,7 @@ Catalog {
 * It seems unnecessary to do this right after starting it, but I found that the changes I made to the postgres config files did not stick until after I restarted it.
     `vim /var/lib/pgsql/9.6/data/pg_hba.conf`
 #
-## CONFIGURE **bacula-dir.conf** FILE
+## CONFIGURE **bacula-dir.conf**
 * Add `DirAddress` to  restrict what IP addresses Bacula will use for IP binding.
 * Make sure backups are compressed
 * Specify `FileSet`
@@ -378,14 +389,14 @@ Pool {
 `bacula-dir -tc opt/bacula/etc/bacula-dir.conf`
 
 #
-## CONFIGURE *bacula-sd.conf* FILE:
+## CONFIGURE **bacula-sd.conf**:
 `vim /opt/bacula/etc/bacula-sd.conf`
 * Only sections that need to be changed are included here. Refer to (TO-DO - list) for a fully copy of **bacula-sd.conf**
 * See `#!!` comments for instructions on what to change: 
 
 ```bash
 Storage {                             # definition of myself
-  Name = filer.swoop.local-sd
+  Name = server.example-sd
   SDPort = 9103                  # Director's port
   WorkingDirectory = "/opt/bacula/work"
   Pid Directory = "/opt/bacula/work"
@@ -420,7 +431,7 @@ cd /opt/bacula/bin
 bacula-sd -tc /opt/bacula/etc/bacula-sd.conf
 ```
 
-### START & ENABLE COMPONENETS
+## START & ENABLE COMPONENETS
 
 #### Start services:
 
@@ -441,7 +452,7 @@ systemctl enable bacula-dir
 systemctl enable bacula-sd
 systemctl enable bacula-fd 
 ```
-### TEST CONSOLE FUNCTIONALITY:
+## TEST CONSOLE FUNCTIONALITY:
 `bconsole`
 * You should enter the console command line, indicated by an asterisk (*). 
 * See troubleshooting options if you have issues here.
@@ -491,7 +502,7 @@ messages
 * See bacula-install-client.md file for step-by-step instructions and on installing the Bacula files on a client and examples of outputs. Return to this file when instructed.
 * Also Reference Digital Ocean's [How to Backup a CentOS 7 Server with Bacula](https://www.digitalocean.com/community/tutorials/how-to-back-up-a-centos-7-server-with-bacula)
 
-## ADDING A CLIENT - OVERVIEW
+### ADDING A CLIENT - **OVERVIEW**
 
 #### On Client:
 * Decide what you need to back up for the client
@@ -504,7 +515,7 @@ messages
 * Create custom file set for Client in **filesets.conf**
 * Create custome pool for Client in **pools.conf** (Optional)
 
-## ADDING A CLIENT - STEP-BY-STEP
+### ADDING A CLIENT - **STEP-BY-STEP**
 * The below steps should be taken on the Bacula **Server** - not the Client.
 
 
@@ -532,7 +543,7 @@ Pool {
 }
 ```
 
-### ADD FILE SETS (Server)
+## ADD FILE SETS
 #### Create/Edit *filesets.conf* file:
 * This step is only needed if you would like to create a custom FileSet for your client. Skip this step if you are OK with using Bacula's generic FileSets.
 
@@ -558,7 +569,8 @@ FileSet {
 }
 ```
 
-### ADD CLIENT RESOURCE so that Server can connect to Clients
+## ADD CLIENT RESOURCE 
+* This is needed so that Server can connect to Clients
 `vim /opt/bacula/etc/conf.d/clients.conf`
 ```bash
 Client {
@@ -581,7 +593,8 @@ Job {
 }
 
 ```    
-### Test connection from server to client:
+#
+## TEST SERVER-CLIENT CONNECTION
 
 #### Restart File Daemon on Client:
 `service bacula-fd restart`
@@ -616,10 +629,9 @@ Job {
 * Make sure the Director's **Name** field indeed points to the Bacula **Server** and not the local **Client** that you are installing.
 *Similarly, check that Director's **Name** field has 'dir' suffix (e.g., `client.example.local-dir`)
 * Make sure to restart the `bacula-dir`, `bacula-fd`, and `bacula-sd` services on the server and the `bacula-fd` service on client after making config changes.
- 
 
-## TEST
-### RUN TEST BACKUP JOB FOR CLIENT
+# 
+## TEST BACKUP JOB FOR CLIENT
 `bconsole`
 * run
 `4`
@@ -637,8 +649,8 @@ Job {
 * You should see a line saying: "Termination: Backup OK"
 
 * Look at the `jobstatus` column. `T` indicates successful termination. `f` indicates job failure.
-
-### RUN A TEST RESTORE OPERATION
+#
+## TEST RESTORE OPERATION FOR CLIENT
 ```bash
 bconsole
 restore all
@@ -669,6 +681,7 @@ ls -lZ /bacula #displays security context for directory
 * Retry the restoring your backup. At this point, it should work. 
 * After completing the above, create a new file, back it up, and test restoring it.
 
+#
 ## OPTIONAL: INSTALL BACULUM GUI
 * If you are OK with administering Bacula from the `bconsole` command line, then this step is not necessary. 
 * I find that having a GUI is useful for the following reasons:
