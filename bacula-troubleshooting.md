@@ -6,6 +6,140 @@ bacula-troubleshooting.md
 * Format document
 * Finish T.O.C
 
+## `bconsole` ERRORS:
+
+### Suggested approach to `bconsole` errors:
+* Common issues are with 1.) Config files (mismatching names/passwords), 2.) Network Environment issue (SELinux/firewall conflicts)
+* Very closely check all relevant config files to determine if there's a simple syntax error. 
+    * It sounds trivial, but I have spent hours trying all kinds of troubleshooting, only to find the problem was a name/password mismatch
+* See diagram to see how all names/passwords should connect across the server and client
+    * If you're still unsure: temporarily change all passwords to "password" and see if it works. If possible, take a snapshot beforehand so you can revert back to its original state if this approach doesn't work. 
+* Test if it's a config issue:
+    `bacula-fd -tc /etc/bacula/bacula-fd.conf -d100`
+* Test if it's a network issue.
+    * Telnet from director to client over port 9102:
+        * `telnet <client FQDN> 9102`
+    * Telnet from client to director over port 9101:
+        * `telnet <director FQDN> 9101`
+* Test if it's an environment issue
+    * Do client and server have same version of Bacula?
+    * Temporarily disable SELinux, first on the client, then the server, then both:
+        * `setenforce 0`
+    * Restart PostgreSQL on your server. 
+    * Make sure you have a hostname entry in `/etc/hosts` on your server
+    * Re-configure and re-make `bacula-fd` on your client to check for compatibility errors. 
+#### General `bconsole` Test: 
+* Test the `bacula-dir` binary with the `bacula-dir.conf`:
+```bash
+cd $BCB #/opt/bacula/bin
+bacula-dir -c /opt/bacula/etc/bacula-dir.conf -d100
+```
+#### Problem 1: Cannot connect to `bconsole` command line
+
+##### Problem 1a:
+* Running `bconsole` does not send you to the `bconsole` (*) command line. Instead, the command task simply hangs. 
+* **Potential Cause 1**: Misconfiguration
+* **Potential Solution**:
+    * Restart bacula: `bac-restart`
+    * If you have not done so already, test your `bacula-dir.conf` configuration
+    * On one occasion, I ran into this problem when I misspelled a `Pool` entry in my `clients.conf`. On another, I mis-named one of my filesets in the **Name = "Name"** field in `filesets.conf`.
+
+##### Symptoms 1b:
+* Running `bconsole` does not send you to the `bconsole` (*) command. Running `./bconsole -c /opt/bacula/etc/bconsole.conf -d100` results in the following error: "bconsole:Could not connect to server Director daemon9101. ERR=Connection refused". 
+* **Potential Cause 1**: The Console cannot connect to the director due to config file inaccuracies
+* **Potential Cause 2**: Environment issues (firewall)
+* **Possible Cause 3**: `bconsole` command is linking to the wrong binary. 
+        
+* **Possible Solution 1**: Make sure port `9101` is open in your firewall
+    * `firewall-cmd --list-ports`
+    * Try `telnet` commands
+* **Potential Solution 2**:Remove the `DirAddress` section in your `bacula-dir.conf` file, if present
+
+* **Potential Solution 3**: Make sure passwords and names across your configs are all compatible. See the the visual provided by [Bacula's Documentation](http://www.bacula.org/7.4.x-manuals/en/problems/Bacula_Frequently_Asked_Que.html#SECTION00260000000000000000)
+    * TIP: If you changed your configs while attempting to add a new client, either create a backup of each config file in its current state (e.g. `bacula-dir.conf.new`). Then remove all the new changes you made from each config file and simply try to get `bconsole` to connect again. Once you have successfully restore functionality, slowly re-implement your changes to each file, stopping frequently to save and test to make sure `bconsole` works.
+
+* **Possible Solution 4**: Launch a different binary by default
+    * Test which one you're currently using `which bconsole`
+    * If `/usr/sbin/bconsole`, try launching other bconsole binaries:
+        ```bash
+        /opt/bacula/etc/bconsole
+        /opt/bacula/bin/bconsole
+        ```            
+        * If one of those works, and you plan on using Baculum - create softlink to the working binary:
+        `ln -sf /opt/bacula/bin/bconsole /usr/sbin/bconsole`
+            * This will make `/usr/sbin/bconsole` execute `/opt/bacula/bin/bconsole`
+    * If one of those works, and you do not plan on using Baculum - rename the current bconsole:
+    * Note - changing this will make the Baculum API test for console fail. 
+    `mv /usr/sbin/bconsole /usr/sbin/bconsole.bak`
+    * Alternatively, you could use a soft/hard link from `/usr/sbin/bconsole` to `/opt/bacula/bin/bconsole`
+
+    
+#### Problem2: "Waiting on FD" Error when running a backup
+* **Possible Cause**: FD cannot communicate back to the Director.
+* **Possible Solution**: Make sure you have the FQDN of the director listed in your bacula-fd.conf file, and not simply the hostname.
+    * For example, if your Director's name in your bacula-dir.conf file is `bacula-test.domain.local-dir`, then you should use the same name in your bacula-fd file in the `Name` field for the Director section. Simply using `bacula-test-dir` (hostname + -dir) will not work.
+* **Other possible causes**: Password mismatch
+    * See Diagram (TO-DO: link to where this should be). 
+
+#### Problem3: "Error: bsock.c:223 gethostbyname() for host "client.example.local" failed: ERR=Name or service not known"
+* Possible Cause/Solution: Make sure your FQDN is spelled correctly in the Bacula configs and in your own environment.  
+        
+#### Problem4: Authentication error when connecting to bconsole:
+* **Description**: Running `bconsole` gives the following error:
+```
+Director authorization problem.
+Most likely the passwords do not agree.
+If you are using TLS, there may have been a certificate validation error during the TLS handshake.
+Please see http://www.bacula.org/en/rel-manual/Bacula_Freque_Asked_Questi.html#SECTION00260000000000000000 for help.
+```  
+#### Problem 5: Cannot find appendable volumes
+* Description: Running a bacula backup jobs gives the below error:
+```bash
+Example-Job.2017-09-05_11.24.02_06 is waiting. Cannot find any appendable volumes.
+Please use the "label" command to create a new Volume for:
+    Storage:      "FileChgr1-Dev1" (/bacula/backup)
+    Pool:         Exapmle-Pool
+    Media type:   File1
+
+```
+* Possible Cause:
+* Possible Solution:
+
+
+## TO-DO either add or delete below two lines
+* Possible Cause:
+* Possible Solution:
+
+#### Problem 6: `bconsole` `label` ERROR:
+##### Error: 
+```
+Connecting to Storage daemon HPDrives at server.example.local:9103 ...
+Sending label command for Volume "TestVol1" Slot 0 ...
+3999 Device "FileStorage" not found or could not be opened.
+Label command failed for Volume TestVol1.
+Do not forget to mount the drive!!!
+```
+#### Solution 1: Closely compare your `bacula-dir.conf` and `bacula-sd.conf` files
+* For me, I mistyped my hostname originally. After the fix, the `label` command worked fine. I never needed to do any `mount` commands
+#### Potential Solution:
+* Note - I have not verified that this works.
+* Add entry to `/etc/fstab` for `/bacula` 
+
+#### Problem 7: `Device File [..] is not open` error
+#### Error when running `* status jobid=<jobid#>`:
+```
+Device status:
+Autochanger "FileChgr1" with devices:
+   "FileChgr1-Dev1" (/bacula/backup)
+   "FileChgr1-Dev2" (/bacula/backup)
+Autochanger "FileChgr2" with devices:
+   "FileChgr2-Dev1" (/bacula/backup)
+   "FileChgr2-Dev2" (/bacula/backup)
+
+Device File: "HP-Drives" (/bacula/backup) is not open.
+   Available Space=1.479 TB
+
+```
 
 #
 ### BACULUM GUI TROUBLESHOOTING
@@ -141,124 +275,7 @@ cd /opt/bacula/bin #or `cd $BCE` if you used my custom environment variables
 #### For futher troubleshooting, monitor the postgres log while you run `./bacula-dir -t -c bacula-dir.conf`:
 `tail -f /var/lib/pgsql/9.6/data/pg_log/<day>`
 
-## `bconsole` ERRORS:
 
-### Suggested approach to `bconsole` errors:
-* Common issues are with 1.) Config files (mismatching names/passwords), 2.) Network Environment issue (SELinux/firewall conflicts)
-* Very closely check all relevant config files to determine if there's a simple syntax error. 
-    * It sounds trivial, but I have spent hours trying all kinds of troubleshooting, only to find the problem was a name/password mismatch
-* See diagram to see how all names/passwords should connect across the server and client
-    * If you're still unsure: temporarily change all passwords to "password" and see if it works. If possible, take a snapshot beforehand so you can revert back to its original state if this approach doesn't work. 
-* Test if it's a config issue:
-    `bacula-fd -tc /etc/bacula/bacula-fd.conf -d100`
-* Test if it's a network issue.
-    * Telnet from director to client over port 9102:
-        * `telnet <client FQDN> 9102`
-    * Telnet from client to director over port 9101:
-        * `telnet <director FQDN> 9101`
-* Test if it's an environment issue
-    * Do client and server have same version of Bacula?
-    * Temporarily disable SELinux, first on the client, then the server, then both:
-        * `setenforce 0`
-    * Restart PostgreSQL on your server. 
-    * Make sure you have a hostname entry in `/etc/hosts` on your server
-    * Re-configure and re-make `bacula-fd` on your client to check for compatibility errors. 
-#### General `bconsole` Test: 
-* Test the `bacula-dir` binary with the `bacula-dir.conf`:
-```bash
-cd $BCB #/opt/bacula/bin
-bacula-dir -c /opt/bacula/etc/bacula-dir.conf -d100
-```
-#### Problem 1: Cannot connect to `bconsole` command line
-
-##### Problem 1a:
-* Running `bconsole` does not send you to the `bconsole` (*) command line. Instead, the command task simply hangs. 
-* **Potential Cause 1**: Misconfiguration
-* **Potential Solution**:
-    * Restart bacula: `bac-restart`
-    * If you have not done so already, test your `bacula-dir.conf` configuration
-    * On one occasion, I ran into this problem when I misspelled a `Pool` entry in my `clients.conf`. On another, I mis-named one of my filesets in the **Name = "Name"** field in `filesets.conf`.
-
-##### Symptoms 1b:
-* Running `bconsole` does not send you to the `bconsole` (*) command. Running `./bconsole -c /opt/bacula/etc/bconsole.conf -d100` results in the following error: "bconsole:Could not connect to server Director daemon9101. ERR=Connection refused". 
-* **Potential Cause 1**: The Console cannot connect to the director due to config file inaccuracies
-* **Potential Cause 2**: Environment issues (firewall)
-* **Possible Cause 3**: `bconsole` command is linking to the wrong binary. 
-        
-* **Possible Solution 1**: Make sure port `9101` is open in your firewall
-    * `firewall-cmd --list-ports`
-    * Try `telnet` commands
-* **Potential Solution 2**:Remove the `DirAddress` section in your `bacula-dir.conf` file, if present
-
-* **Potential Solution 3**: Make sure passwords and names across your configs are all compatible. See the the visual provided by [Bacula's Documentation](http://www.bacula.org/7.4.x-manuals/en/problems/Bacula_Frequently_Asked_Que.html#SECTION00260000000000000000)
-    * TIP: If you changed your configs while attempting to add a new client, either create a backup of each config file in its current state (e.g. `bacula-dir.conf.new`). Then remove all the new changes you made from each config file and simply try to get `bconsole` to connect again. Once you have successfully restore functionality, slowly re-implement your changes to each file, stopping frequently to save and test to make sure `bconsole` works.
-
-* **Possible Solution 4**: Launch a different binary by default
-    * Test which one you're currently using `which bconsole`
-    * If `/usr/sbin/bconsole`, try launching other bconsole binaries:
-        ```bash
-        /opt/bacula/etc/bconsole
-        /opt/bacula/bin/bconsole
-        ```            
-        * If one of those works, and you plan on using Baculum - create softlink to the working binary:
-        `ln -sf /opt/bacula/bin/bconsole /usr/sbin/bconsole`
-            * This will make `/usr/sbin/bconsole` execute `/opt/bacula/bin/bconsole`
-    * If one of those works, and you do not plan on using Baculum - rename the current bconsole:
-    * Note - changing this will make the Baculum API test for console fail. 
-    `mv /usr/sbin/bconsole /usr/sbin/bconsole.bak`
-    * Alternatively, you could use a soft/hard link from `/usr/sbin/bconsole` to `/opt/bacula/bin/bconsole`
-
-    
-#### Problem2: "Waiting on FD" Error when running a backup
-* **Possible Cause**: FD cannot communicate back to the Director.
-* **Possible Solution**: Make sure you have the FQDN of the director listed in your bacula-fd.conf file, and not simply the hostname.
-    * For example, if your Director's name in your bacula-dir.conf file is `bacula-test.domain.local-dir`, then you should use the same name in your bacula-fd file in the `Name` field for the Director section. Simply using `bacula-test-dir` (hostname + -dir) will not work.
-* **Other possible causes**: Password mismatch
-    * See Diagram (TO-DO: link to where this should be). 
-
-#### Problem3: "Error: bsock.c:223 gethostbyname() for host "client.example.local" failed: ERR=Name or service not known"
-* Possible Cause/Solution: Make sure your FQDN is spelled correctly in the Bacula configs and in your own environment.  
-        
-#### Problem4: Authentication error when connecting to bconsole:
-* **Description**: Running `bconsole` gives the following error:
-```
-Director authorization problem.
-Most likely the passwords do not agree.
-If you are using TLS, there may have been a certificate validation error during the TLS handshake.
-Please see http://www.bacula.org/en/rel-manual/Bacula_Freque_Asked_Questi.html#SECTION00260000000000000000 for help.
-```  
-#### Problem 5: Cannot find appendable volumes
-* Description: Running a bacula backup jobs gives the below error:
-```bash
-Example-Job.2017-09-05_11.24.02_06 is waiting. Cannot find any appendable volumes.
-Please use the "label" command to create a new Volume for:
-    Storage:      "FileChgr1-Dev1" (/bacula/backup)
-    Pool:         Exapmle-Pool
-    Media type:   File1
-
-```
-* Possible Cause:
-* Possible Solution:
-
-
-## TO-DO either add or delete below two lines
-* Possible Cause:
-* Possible Solution:
-
-#### `bconsole` `label` ERROR:
-##### Error: 
-```
-Connecting to Storage daemon HPDrives at server.example.local:9103 ...
-Sending label command for Volume "TestVol1" Slot 0 ...
-3999 Device "FileStorage" not found or could not be opened.
-Label command failed for Volume TestVol1.
-Do not forget to mount the drive!!!
-```
-#### Solution 1: Closely compare your `bacula-dir.conf` and `bacula-sd.conf` files
-* For me, I mistyped my hostname originally. After the fix, the `label` command worked fine. I never needed to do any `mount` commands
-#### Potential Solution:
-* Note - I have not verified that this works.
-* Add entry to `/etc/fstab` for `/bacula` 
 
 # BAT TROUBLESHOOTING
 * Note, I attempted to configure BAT, but ran into so many issues that I gave up and went with Baculum instead. Nonetheless, I have included some errors and troubleshooting below in hopes to improve BAT documentation. 

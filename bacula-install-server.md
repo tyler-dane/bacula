@@ -499,17 +499,17 @@ messages
 #
 ## INSTALL & CONFIGURE CLIENT 
 * Client is named `client.example.local` in this example
-* See bacula-install-client.md file for step-by-step instructions and on installing the Bacula files on a client and examples of outputs. Return to this file when instructed.
+* Before continuing, following the instructions in [bacula-install-client.md](bacula-install-client.md) for installing Bacula on a client system. Return to this file when instructed.
 * Also Reference Digital Ocean's [How to Backup a CentOS 7 Server with Bacula](https://www.digitalocean.com/community/tutorials/how-to-back-up-a-centos-7-server-with-bacula)
 
 ### ADDING A CLIENT - **OVERVIEW**
 
-#### On Client:
+1. On Client:
 * Decide what you need to back up for the client
 * Install and configure Bacula File Daemon
 * Copy password from bacula-fd.conf
 
-#### On Server:
+2. On Server:
 * Create custom file set in **filesets.conf** based on what your client needs backed up
 * Add new `Client {}` and `Job{}` sections in clients.conf
 * Create custom file set for Client in **filesets.conf**
@@ -571,6 +571,7 @@ FileSet {
 
 ## ADD CLIENT RESOURCE 
 * This is needed so that Server can connect to Clients
+
 `vim /opt/bacula/etc/conf.d/clients.conf`
 ```bash
 Client {
@@ -604,7 +605,7 @@ Job {
 
 `bac-status`
 
-* Command comes from previously created alias  See: ____ for an example of the ~/.bash_profile. 
+* Command comes from previously created alias.  [/bacula/configs/.bash_profile](https://github.com/tyler-hitzeman/bacula) for an example of the ~/.bash_profile. 
 * To-do: ^Update the reference here
 
 `bconsole`
@@ -632,28 +633,29 @@ Job {
 
 # 
 ## TEST BACKUP JOB FOR CLIENT
-`bconsole`
-* run
-`4`
-    * Enter whatever number corresponds to your client
-`yes`
+```
+bconsole
+run
+4       #Enter whatever number corresponds to your client
+yes
+```
 
 #### Check on your job. 
 * Below are three commands to show you the status of your job. Review outputs closely and troubleshoot any errors.
 
-`list jobs`
+`* list jobs`
 
-`status director`
+`* status director`
 
-`messages`
+`* messages`
 * You should see a line saying: "Termination: Backup OK"
 
 * Look at the `jobstatus` column. `T` indicates successful termination. `f` indicates job failure.
 #
 ## TEST RESTORE OPERATION FOR CLIENT
-```bash
+```
 bconsole
-restore all
+restore all     #If you're testing a large backup, you might be better off simply running `restore`. Running`restore all` can quickly make the client machine run out of disk space.
 5
 done
 yes
@@ -684,18 +686,19 @@ ls -lZ /bacula #displays security context for directory
 #
 ## OPTIONAL: INSTALL BACULUM GUI
 * If you are OK with administering Bacula from the `bconsole` command line, then this step is not necessary. 
-* I find that having a GUI is useful for the following reasons:
-    * The graphs, charts, and windows make it easier to gain an overview of your environment. 
-    * The above features can also be useful when troubleshooting
-    * Allows novices to immediately monitor and opeate Bacula , instead of having to first spend a lot of time learning the `bconsole` commands
+* However, I find that having a GUI is useful for the following reasons:
+    * The graphs, charts, and windows make it easier to gain an overview of your environment and troubleshoot.
+    * The GUI allows novices to immediately monitor and opeate Bacula , instead of having to first spend a lot of time learning the `bconsole` commands
 * I use the Baculum GUI in this tutorial. I found their product and documentation superior and easier to use than other GUI solutions, like *BAT* and *Bacula Web*. 
-* See **BACULUM GUI TROUBLESHOOTING** section below if you run into issues.
+* See **BACULUM GUI TROUBLESHOOTING** section in [bacula-troubleshooting.md](bacula-troubleshooting.md)  if you run into issues.
 
 #### Backup Bacula config files:
-* On first save config action the Bacula configuration is joined into one file per Bacula component
+* On first `save config` action the Bacula configuration is joined into one file per Bacula component, so back up your config files in case your configuration breaks. 
+
 ```bash
-mkdir -p /tmp/bacula/configs
-cp #To-Do: Figure out some clean syntax to get this done
+mkdir -p /tmp/bacula/configs.bak
+cp -r /opt/bacula/etc/*.conf /tmp/bacula/configs.bak/
+cp -r /opt/bacula/etc/conf.d/*.conf /tmp/bacula/configs.bak/
 ```
 ### Install CentOS GUI:
 `yum group install -y gnome-desktop x11 fonts`

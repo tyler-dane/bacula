@@ -56,8 +56,10 @@ firewall-cmd --list-ports
 
 #### Create a configuration script
 
-`cd /tmp/bacula-9.0.3`
-`vim setup.sh`
+```bash
+cd /tmp/bacula-9.0.3
+vim setup.sh
+```
 ```
 #!/bin/bash
     CFLAGS="-g -Wall" \
@@ -95,7 +97,7 @@ make install-autostart-fd
 
 `service bacula-fd status`
 
-#### Reboot and confirm that the FD starts on boot. 
+#### If acceptable, reboot and confirm that the FD starts on boot. 
 `systemctl reboot`
 
 ##### If not, use systemctl command and reboot again to confirm:
@@ -112,42 +114,44 @@ chcon system_u:object_r:bacula_store_t:s0 /bacula
 semanage fcontext -a -t bacula_store_t "/bacula/restore(/.*)?"
 restorecon -R -v /bacula/restore/
 ```
-#### Copy password from bacula-fd.conf
-* Keep this password handy - you will need when configuring the **Server** to connect with your new **Client**. 
+
 #
 ## CONFIGURE **CLIENT'S** **bacula-fd.conf**
 `vim /opt/etc/bacula/bacula-fd.conf`
 * *Important*: Change `Director { [..] Name =` to FQDN of client for the Director and Tray Monitor
 * Note: FQDN does not necessarily equate to the server's hostname. It seems like Bacula places the hostname there by default when installing. Not updating the field to reflect the FQDN might lead to connection errors (see **Troubleshooting** section below for more information).
+* *Important*: Record the Director's password (`A` in the below example) somewhere - you will use it to connect the **Server** with your new **Client**.
 
 ```bash
 Director {
-  Name = server.example.local-dir
-  Password = "A"
+  Name = server.example.local-dir #Update this line
+  Password = "A" #Your pre-generated password will be more complex - I use `A` for simplicity.
 }
 Messages {
   Name = Standard
-  director = server.example.local-dir = all, !skipped, !restored
+  director = server.example.local-dir = all, !skipped, !restored #Update this line
 }
 ```
 * Change director name to `hostname + -dir` so logs can be sent to Server
 #
 ## PREPARE THE BACULA **SERVER**
-* Those are all the steps that you should need to take on the new **Client**. There are a number of **Server** config changes that will be required, however. An overview of those changes are listed in this file, but you should refer to the **ADD A CLIENT** section in: [bacula-install-server.md] (link) for step-by-step instructions.
+* Above all the steps that you should need to take on the new **Client**. There are a number of **Server** config changes that will need to be made before you can use Bacula on your client, however. An overview of those steps are listed in this file, but you should refer to the **ADD A CLIENT** section in: [bacula-install-server.md](bacula-install-server.md) for step-by-step instructions.
 
-### ON BACULA **SERVER** - UPDATE THE *filesets.conf* FILE:
+1.  ON BACULA **SERVER** - UPDATE THE *filesets.conf* FILE:
 * This step is only needed if you would like to create a custom FileSet for your client. Skip this step if you are OK with using Bacula's generic FileSets.
 
-`vim /opt/bacula/etc/conf.d/clients.conf`
+  `vim /opt/bacula/etc/conf.d/clients.conf`
 
-### ON BACULA **SERVER** - UPDATE THE *clients.conf* FILE:
-`vim /opt/bacula/etc/conf.d/clients.conf`
+2.  ON BACULA **SERVER** - UPDATE THE *clients.conf* FILE:
+    `vim /opt/bacula/etc/conf.d/clients.conf`
 
-### ON BACULA **SERVER** - UPDATE the *pools.conf*
-`vim /opt/bacula/etc/conf.d/pools.conf`
+3.  ON BACULA **SERVER** - UPDATE the *pools.conf*
 
-### EDIT **SERVER'S** *bacula-fd.conf* FILE
-`vim /opt/bacula/etc/bacula-fd.conf`
+    `vim /opt/bacula/etc/conf.d/pools.conf`
+
+4.  EDIT **SERVER'S** *bacula-fd.conf* FILE
+
+    `vim /opt/bacula/etc/bacula-fd.conf`
 
 ### After troubleshooting any issues, continue following instructions listed in `bacula-install-server.md`.
 
