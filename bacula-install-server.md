@@ -505,15 +505,15 @@ messages
 ### ADDING A CLIENT - **OVERVIEW**
 
 1. On Client:
-* Decide what you need to back up for the client
-* Install and configure Bacula File Daemon
-* Copy password from bacula-fd.conf
+  * Decide what you need to back up for the client
+  * Install and configure Bacula File Daemon
+  * Copy password from bacula-fd.conf
 
 2. On Server:
-* Create custom file set in **filesets.conf** based on what your client needs backed up
-* Add new `Client {}` and `Job{}` sections in clients.conf
-* Create custom file set for Client in **filesets.conf**
-* Create custome pool for Client in **pools.conf** (Optional)
+  * Create custom file set in **filesets.conf** based on what your client needs backed up
+  * Add new `Client {}` and `Job{}` sections in clients.conf
+  * Create custom file set for Client in **filesets.conf**
+  * Create custome pool for Client in **pools.conf** (Optional)
 
 ### ADDING A CLIENT - **STEP-BY-STEP**
 * The below steps should be taken on the Bacula **Server** - not the Client.
@@ -607,13 +607,11 @@ Job {
 
 * Command comes from previously created alias.  [/bacula/configs/.bash_profile](https://github.com/tyler-hitzeman/bacula) for an example of the ~/.bash_profile. 
 * To-do: ^Update the reference here
-
-`bconsole`
-
-`status client`
-
-`(the number of your new client)`
-
+```bash
+bconsole
+status client
+(the number of your new client)
+```
 * There should immediately be output that lists the running jobs and info about the client
 
 #### Possible Error 1:

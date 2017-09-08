@@ -13,9 +13,17 @@
 ## Notes
 * If you already installed an older version of Bacula, be sure to uninstall it; there can only be one instance of Bacula on a client. 
   * `yum remove bacula-client`
+  * If you installed your previous version of Bacula from source, run `make uninstall` and remove all Bacula files from you system. For example:
+    ```bash
+    cd /etc/bacula
+    make uninstall
+    rm -rf /etc/bacula/
+    find / -name bacula
+    #Delete any hits
+    ```
 * This process has been tested on the following systems:
   * CentOS 7.3, 7.4
-  * Red Hat 7.3, 7.4
+  * Red Hat 6.8, 7.3, 7.4
 * The commands are listed with the assumption that you are signed in as *root*. If that is not possible, try using `sudo` before each command.
 * As a prerequisite, I recommend generating a list of files and directories (**FileSets**, in Bacula terminology) you would like to backup. Verify that the size of all your files is acceptable. Doing this ahead of time will make the install process smoother in the long run. 
 #
@@ -33,12 +41,22 @@ If your client doesn't already have a Fully Qualified Domain Name (FQDN), assign
 `yum install -y wget vim gcc gcc-c++ libacl-devel lzo-devel libzip-devel policycoreutils-python`
 
 #### Check System Time and Sync if Incorrect:
-`date -R`
-
-`ntpdate -u 0.us.pool.ntp.org`
+```bash
+date -R
+#If not, run:
+  ntpdate -u 0.us.pool.ntp.org
+```
 
 #### Configure Firewall
 ```bash
+#For Red hat / CentOS 6:
+iptables -I INPUT -p tcp --dport 9101 -j ACCEPT
+iptables -I INPUT -p tcp --dport 9102 -j ACCEPT
+iptables -I INPUT -p tcp --dport 9103 -j ACCEPT
+/sbin/service iptables save 
+  #Save so settings with persist upon reboot
+
+#For Red Hat / CentOS 7:
 firewall-cmd --permanent --zone=public --add-port=9101-9103/tcp
 firewall-cmd --reload
 firewall-cmd --list-ports
@@ -98,12 +116,16 @@ make install-autostart-fd
 `service bacula-fd status`
 
 #### If acceptable, reboot and confirm that the FD starts on boot. 
-`systemctl reboot`
+```bash
+systemctl reboot
+service bacula-fd status
+```
 
 ##### If not, use systemctl command and reboot again to confirm:
 ```bash 
 systemctl enable bacula-fd.service
 systemctl reboot
+service bacula-fd status
 ```
 
 #### Configure SELinux to allow director to write to /bacula director.
@@ -117,7 +139,7 @@ restorecon -R -v /bacula/restore/
 
 #
 ## CONFIGURE **CLIENT'S** **bacula-fd.conf**
-`vim /opt/etc/bacula/bacula-fd.conf`
+`vim /etc/bacula/bacula-fd.conf`
 * *Important*: Change `Director { [..] Name =` to FQDN of client for the Director and Tray Monitor
 * Note: FQDN does not necessarily equate to the server's hostname. It seems like Bacula places the hostname there by default when installing. Not updating the field to reflect the FQDN might lead to connection errors (see **Troubleshooting** section below for more information).
 * *Important*: Record the Director's password (`A` in the below example) somewhere - you will use it to connect the **Server** with your new **Client**.
