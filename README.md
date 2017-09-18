@@ -17,7 +17,7 @@ This repository contains instructions and configuration files for installing and
 * If you want to start using Bacula as quickly as possible, I recommend simply following those guides. 
 * If you want to customize your Bacula instance by using a newer version and optimizing configurations, however, I suggest using my documentation as a supplemental resource.  
 
-#### Review the [Configuration File Diagram](https://github.com/tyler-hitzeman/bacula/*image*.png) provided in this repository
+#### Review the [Configuration File Diagram](password-chain.jpg) provided in this repository
 
 #### Review the sample [Raw Configuration Files](https://github.com/tyler-hitzeman/bacula/configs) provided in this repository.
 
