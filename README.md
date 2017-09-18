@@ -19,7 +19,7 @@ This repository contains instructions and configuration files for installing and
 
 #### Review the [Configuration File Diagram](password-chain.jpg) provided in this repository
 
-#### Review the sample [Raw Configuration Files](https://github.com/tyler-hitzeman/bacula/configs) provided in this repository.
+#### Review the sample [Raw Configuration Files](https://github.com/tyler-hitzeman/bacula/tree/master/configs) provided in this repository.
 
 
 #
