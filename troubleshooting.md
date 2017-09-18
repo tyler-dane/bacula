@@ -1,5 +1,3 @@
-bacula-troubleshooting.md
-
 ## TABLE OF CONTENTS
 
 ## TO-DO
@@ -12,16 +10,16 @@ bacula-troubleshooting.md
 * Common issues are with 1.) Config files (mismatching names/passwords), 2.) Network Environment issue (SELinux/firewall conflicts)
 * Very closely check all relevant config files to determine if there's a simple syntax error. 
     * It sounds trivial, but I have spent hours trying all kinds of troubleshooting, only to find the problem was a name/password mismatch
-* See diagram to see how all names/passwords should connect across the server and client
-    * If you're still unsure: temporarily change all passwords to "password" and see if it works. If possible, take a snapshot beforehand so you can revert back to its original state if this approach doesn't work. 
-* Test if it's a config issue:
+* See [password-chain](password-chain.jpg) diagram to see how all names/passwords should connect across the server and client architecture
+    * If you're still unsure whether you have password issues: temporarily change all passwords to "password" and see if it works. If possible, take a snapshot beforehand so you can revert back to its original state if this approach doesn't work. 
+* Test configuration file:
     `bacula-fd -tc /etc/bacula/bacula-fd.conf -d100`
-* Test if it's a network issue.
+* Test network access.
     * Telnet from director to client over port 9102:
         * `telnet <client FQDN> 9102`
     * Telnet from client to director over port 9101:
         * `telnet <director FQDN> 9101`
-* Test if it's an environment issue
+* Test environment
     * Do client and server have same version of Bacula?
     * Temporarily disable SELinux, first on the client, then the server, then both:
         * `setenforce 0`
@@ -79,7 +77,7 @@ bacula-dir -c /opt/bacula/etc/bacula-dir.conf -d100
 * **Possible Solution**: Make sure you have the FQDN of the director listed in your bacula-fd.conf file, and not simply the hostname.
     * For example, if your Director's name in your bacula-dir.conf file is `bacula-test.domain.local-dir`, then you should use the same name in your bacula-fd file in the `Name` field for the Director section. Simply using `bacula-test-dir` (hostname + -dir) will not work.
 * **Other possible causes**: Password mismatch
-    * See Diagram (TO-DO: link to where this should be). 
+    * See [password-chain](password-chain.jpg) diagram. 
 
 #### Problem3: "Error: bsock.c:223 gethostbyname() for host "client.example.local" failed: ERR=Name or service not known"
 * Possible Cause/Solution: Make sure your FQDN is spelled correctly in the Bacula configs and in your own environment.  
@@ -140,6 +138,17 @@ Device File: "HP-Drives" (/bacula/backup) is not open.
    Available Space=1.479 TB
 
 ```
+## `bacula-fd` ERRORS
+#### Problem: The `bacula-fd` daemon shows the following error:
+```
+Starting bacula-fd: bacula-fd: error while loading shared libraries: /usr/lib64/libstdc++.so.6: invalid ELF header
+
+```
+* **Potential Cause 1**: File system corruption
+* **Potential Solution 1**: Do further troubleshooting to confirm corruption.
+* **Potential Solution 2**: Run `fsck` operation
+* **Potential Solution 3** Restore from backup or rebuild file system.
+
 
 #
 ### BACULUM GUI TROUBLESHOOTING
@@ -191,11 +200,13 @@ systemctl restart httpd
 ```
 * Attempt to login again: http://localhost:9095
 
-TO-DO, figure solution out to below or skpo
 #### Problem: API Configuration gives error that your `directory path for new config files` is not writable by Apache
-    #Potential Solution: make directory globally writable
-    chmod 777 /opt/bacula/work
-
+* **Potential Temporary Solution**: Temporarily make directory globally writable and restart Apache:
+```bash
+chmod 777 /opt/bacula/work
+service httpd restart
+```
+* **Potential Long-term Solution**: Unsure. If you know of a good solution to the above problem, please document and submit a Pull Request.  
 
 
 
@@ -256,7 +267,7 @@ Please correct configuration file: bacula-dir.conf
 
 #### Potential Solution 2:
 
-* Change the 'local' entry for Unix domain socket connections from 'peer' to 'md5':
+* Change the 'local' entry for Unix domain socket connections from *peer* to *md5*:
 * See the error from `pg_log` to find what line you need to change (Line 80 in my case).
 
 `vim /var/lib/pgsql/9.6/data/pg_hba.conf`
@@ -278,7 +289,7 @@ cd /opt/bacula/bin #or `cd $BCE` if you used my custom environment variables
 
 
 # BAT TROUBLESHOOTING
-* Note, I attempted to configure BAT, but ran into so many issues that I gave up and went with Baculum instead. Nonetheless, I have included some errors and troubleshooting below in hopes to improve BAT documentation. 
+* Note, I attempted to configure BAT, but ran into so many issues that I gave up and switched to Baculum instead. Nonetheless, I have included some errors and troubleshooting below in hopes to improve BAT documentation. 
 
 #### Problem: Not having the right packages.
 * **Potentail Solution**: 
@@ -323,7 +334,7 @@ ln -sf qmake /usr/bin/qmake-qt4
 ```
 
 #### Cannot connect to X server
-#Error:
+#### Error:
 ```
 bat: cannot connect to X server
 ```
@@ -345,22 +356,3 @@ bat: cannot connect to X server
    Note, the depkgs-qt package is required for building bat, because bat is currently built with Qt version 4.3.4. It can be built with other Qt versions, but that almost always creates problems or introduces instabilities.
     ```
 * **Possible Cause**: You didn't install 3rd party dependency packages before running `make` during the install process. See [Bacula Documentation](http://www.bacula.org/9.0.x-manuals/en/main/Installing_Bacula.html#SECTION001450000000000000000) for more information.
-
-
-
-
-
-
-#### delete
-### SET PASSWORDS
- ##### Note - the default passwords for Bacula might the same ( TO -DO: confirm).
- * The passwords were already set when getting to this point, so not sure if this step is necessary. Wouldn't hurt, though.
-```bash
-DIR_PASSWORD=`date +%s | sha256sum | base64 | head -c 33`
-sudo sed -i "s/@@DIR_PASSWORD@@/${DIR_PASSWORD}/" opt/bacula/etc/bacula/bacula-dir.conf
-sudo sed -i "s/@@DIR_PASSWORD@@/${DIR_PASSWORD}/" opt/bacula/etc/bacula/bconsole.conf
-
-SD_PASSWORD=`date +%s | sha256sum | base64 | head -c 33`
-sudo sed -i "s/@@SD_PASSWORD@@/${SD_PASSWORD}/" opt/bacula/etc/bacula/bacula-sd.conf
-sudo sed -i "s/@@SD_PASSWORD@@/${SD_PASSWORD}/" opt/bacula/etc/bacula/bacula-dir.conf
- ```

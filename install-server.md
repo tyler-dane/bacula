@@ -499,7 +499,7 @@ messages
 #
 ## INSTALL & CONFIGURE CLIENT 
 * Client is named `client.example.local` in this example
-* Before continuing, following the instructions in [bacula-install-client.md](bacula-install-client.md) for installing Bacula on a client system. Return to this file when instructed.
+* Before continuing, following the instructions in [install-client.md](install-client.md) for installing Bacula on a client system. Return to this file when instructed.
 * Also Reference Digital Ocean's [How to Backup a CentOS 7 Server with Bacula](https://www.digitalocean.com/community/tutorials/how-to-back-up-a-centos-7-server-with-bacula)
 
 ### ADDING A CLIENT - **OVERVIEW**

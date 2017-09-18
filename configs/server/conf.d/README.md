@@ -1,0 +1,1 @@
+If you followed the instructions in [install-server.md](install-server.md), These config files should be located in the following directory: `/opt/bacula/etc/conf.d`

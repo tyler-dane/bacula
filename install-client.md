@@ -157,7 +157,7 @@ Messages {
 * Change director name to `hostname + -dir` so logs can be sent to Server
 #
 ## PREPARE THE BACULA **SERVER**
-* Above all the steps that you should need to take on the new **Client**. There are a number of **Server** config changes that will need to be made before you can use Bacula on your client, however. An overview of those steps are listed in this file, but you should refer to the **ADD A CLIENT** section in: [bacula-install-server.md](bacula-install-server.md) for step-by-step instructions.
+* Above all the steps that you should need to take on the new **Client**. There are a number of **Server** config changes that will need to be made before you can use Bacula on your client, however. An overview of those steps are listed in this file, but you should refer to the **ADD A CLIENT** section in: [install-server.md](install-server.md) for step-by-step instructions.
 
 1.  ON BACULA **SERVER** - UPDATE THE *filesets.conf* FILE:
 * This step is only needed if you would like to create a custom FileSet for your client. Skip this step if you are OK with using Bacula's generic FileSets.

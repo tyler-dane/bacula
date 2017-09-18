@@ -19,15 +19,15 @@ This repository contains instructions and configuration files for installing and
 
 #### Review the [Configuration File Diagram](https://github.com/tyler-hitzeman/bacula/*image*.png) provided in this repository
 
-#### Review the [Raw Configuration Files](https://github.com/tyler-hitzeman/bacula/configs) provided in this repository.
+#### Review the sample [Raw Configuration Files](https://github.com/tyler-hitzeman/bacula/configs) provided in this repository.
 
 
 #
-### Step 2: [Install Bacula Server](bacula-install-server.md)
-* This tutorial installs Bacula Server on a CentOS 7 system.
+### Step 2: [Install Bacula Server](install-server.md)
+* This tutorial demonstrates how to install Bacula Server on a CentOS 7 system.
 #
-### Step 3: [Install Bacula Client](bacula-install-client.md)
-* This tutorial installs Bacula Client on a CentOS 7 system.
+### Step 3: [Install Bacula Client](install-client.md)
+* This tutorial demonstrates install Bacula Client on a CentOS 7 system.
 #
 ### Stuck? See if your problem is covered in the [Troubleshooting File](troubleshooting.md)
 
