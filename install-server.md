@@ -22,15 +22,9 @@ bacula-install-server.md
 
 #
 ### TO-DO:
-* Finish:
-    * Diagram of configs
-    * Full example configurations
-* Update Table of Contents
-* Remove sections that are too specific
 * Note that there is only one Bacula server in this architecture
 * Note that its best to monitor system for at least a month before putting it into production so that you can tweak file sets and test monthly backup. It's also difficult to REDUCE the disk space that your backups take if the first file sets are restrictive enough for you needs.
-* Look into PostgreSQL security in 
-http://www.bacula.org/9.0.x-manuals/en/main/Installing_Configuring_Post.html
+
 ## NOTES
 * These steps were tested on CentOS 7.4 and RedHat 7.4 systems.
 * I use `vim`, but feel free to install and use whatever editor you like
