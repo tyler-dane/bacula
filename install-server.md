@@ -682,15 +682,15 @@ ls -lZ /bacula #displays security context for directory
     * The graphs, charts, and windows make it easier to gain an overview of your environment and troubleshoot.
     * The GUI allows novices to immediately monitor and opeate Bacula , instead of having to first spend a lot of time learning the `bconsole` commands
 * I use the Baculum GUI in this tutorial. I found their product and documentation superior and easier to use than other GUI solutions, like *BAT* and *Bacula Web*. 
-* See **BACULUM GUI TROUBLESHOOTING** section in [bacula-troubleshooting.md](bacula-troubleshooting.md)  if you run into issues.
+* See **BACULUM GUI TROUBLESHOOTING** section in [troubleshooting.md](troubleshooting.md)  if you run into issues.
 
 #### Backup Bacula config files:
 * On first `save config` action the Bacula configuration is joined into one file per Bacula component, so back up your config files in case your configuration breaks. 
 
 ```bash
-mkdir -p /tmp/bacula/configs.bak
-cp -r /opt/bacula/etc/*.conf /tmp/bacula/configs.bak/
-cp -r /opt/bacula/etc/conf.d/*.conf /tmp/bacula/configs.bak/
+  mkdir -p /tmp/bacula/configs.bak
+  cp -r /opt/bacula/etc/*.conf /tmp/bacula/configs.bak/
+  cp -r /opt/bacula/etc/conf.d/*.conf /tmp/bacula/configs.bak/
 ```
 ### Install CentOS GUI:
 `yum group install -y gnome-desktop x11 fonts`

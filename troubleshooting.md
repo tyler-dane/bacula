@@ -218,6 +218,26 @@ bacula-dir: ERROR TERMINATION at parse_conf.c:1118 Config error: "QueryFile" dir
 * **Potential Cause**: Contrary to what you might think after looking at this error, you might have simply supplied the wrong binary path. There are four different versions of the -json binary: `bdirjson`, `bsdjson`, `bfdjson`, and `bbconsjson`. They should all be located in `/opt/bacula/bin`
 
 * **Potential Solution**: Make sure `sudo` is unchecked and modify the binary path for each category. For example, the bconsole binary path should be `/opt/bacula/bin/bbconsjson` and the config file path should be `/opt/bacula/bin/bconsole.conf`
+
+#### Problem: pam errors after installing `gnome-desktop`
+```
+Transaction check error:
+  file /usr/share/man/man5/limits.conf.5.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man5/pam_env.conf.5.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man8/faillock.8.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man8/pam_env.8.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man8/pam_exec.8.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man8/pam_faillock.8.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man8/pam_unix.8.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man8/pam_userdb.8.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+  file /usr/share/man/man8/pwhistory_helper.8.gz from install of pam-1.1.8-18.el7.i686 conflicts with file from package pam-1.1.8-18.el7.x86_64
+
+Error Summary
+```
+#### Potential Cause:
+#### Potential Solution:
+
+#
 ## VNC TROUBLESHOOTING
 ### Problem: Black screen when trying to connect from client and 'gnome-shell killed by SIGTRAP' errors.
 * **Possible Cause**: gnome may not be running on server. 
