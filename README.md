@@ -8,6 +8,7 @@ This repository contains instructions and configuration files for installing and
     * The architecture (i.e., how `bacula-dir`, `bacula-sd`, and `bacula-fd` interact)
     * The `bconsole` command line
     * What version best meets your needs. I use version 9.0.3.
+    * How to develop a suitable [Disaster Recovery Plan](http://www.bacula.org/5.0.x-manuals/en/main/main/Disaster_Recovery_Using_Bac.html)  for you Bacula instance.
 
 #### Read through Bacula's documentation at [blog.bacula.org](http://blog.bacula.org/what-is-bacula/)
 
