@@ -1,7 +1,6 @@
 bacula-install-server.md
 
 ## Table of Contents
-* TO-DOs
 * NOTES
 * SET UP THE SERVER ENVIRONMENT
 * SET UP THE BACULA ENVIRONMENT
@@ -21,15 +20,13 @@ bacula-install-server.md
 * OPTIONAL: INSTALL BACULUM GUI
 
 #
-### TO-DO:
-* Note that there is only one Bacula server in this architecture
-* Note that its best to monitor system for at least a month before putting it into production so that you can tweak file sets and test monthly backup. It's also difficult to REDUCE the disk space that your backups take if the first file sets are restrictive enough for you needs.
-
 ## NOTES
 * These steps were tested on CentOS 7.4 and RedHat 7.4 systems.
 * I use `vim`, but feel free to install and use whatever editor you like
 * I use **PostgreSQL 9.6.3** as my database, but you can also **MySQL**
 * The whitespace used in the YAML .conf files is different in Bacula version 9 as it is in version 5.5 (the version included in many package managers at the time of this writing), so be sure to adjust according to the version 9 standards if you copy and past from older versions. 
+* Multiple Bacula servers can be used, but I only use one in this architecture
+* It's best to monitor system for at least a month before putting it into production so that you can tweak file sets and test the monthly backup. It's also difficult to reduce the disk space that your backups take if the first file sets are restrictive enough for you needs.
 
 ## SET UP THE SERVER ENVIRONMENT
 ### INSTALL NEEDED PACKAGES:
