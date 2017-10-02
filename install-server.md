@@ -252,7 +252,7 @@ cd /opt/bacula/etc
 ```
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 local   bacula          bacula                                  md5
-host    bacula          bacula          172.16.3.60/24          trust
+host    bacula          bacula          192.168.0.20/24          trust
 ```
 
 ##### Switch back to root: 
@@ -607,7 +607,7 @@ status client
 
 #### Possible Error 1:
 ```bash
-    bacula-test1-dir JobId 0: Fatal error: Unable to authenticate with File daemon at "172.16.4.11:9102".
+    bacula-test1-dir JobId 0: Fatal error: Unable to authenticate with File daemon at "192.168.0.20:9102".
 
  Possible causes:
     * Passwords or names not the same or
@@ -856,6 +856,6 @@ systemctl restart vncserver@:5.service
 * Note: This is not necessarily the same password as the Centos user's password
 
 #### SECURITY TIP - Using SSH Tunnel/port forwarding to secure VNC Session:
-`ssh -L 5900:172.16.4.18:5905 bacula@192.169.0.20 -N`
+`ssh -L 5900:192.168.0.20:5905 bacula@192.169.0.20 -N`
  * Enter bacula's user pw. The connection will appear to hang, but you can keep it running as along as you use the remote desktop.
 #
