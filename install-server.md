@@ -856,6 +856,6 @@ systemctl restart vncserver@:5.service
 * Note: This is not necessarily the same password as the Centos user's password
 
 #### SECURITY TIP - Using SSH Tunnel/port forwarding to secure VNC Session:
-`ssh -L 5900:172.16.4.18:5905 bacula@172.16.4.18 -N`
+`ssh -L 5900:172.16.4.18:5905 bacula@192.169.0.20 -N`
  * Enter bacula's user pw. The connection will appear to hang, but you can keep it running as along as you use the remote desktop.
 #
