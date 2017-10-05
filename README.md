@@ -28,7 +28,7 @@ This repository contains instructions and configuration files for installing and
 * This tutorial demonstrates how to install Bacula *Client* on a CentOS 7 system.
 
 ### Step 4: [Operate Bacula](operate.md)
-* This document details how to execute common Bacula tasks, such as checking the status of backups and volumes
+* This document details how to execute common Bacula tasks, such as checking the status of backups and volumes.
 ----
 ### Stuck? See if your problem is covered in the [Troubleshooting File](troubleshooting.md)
 
