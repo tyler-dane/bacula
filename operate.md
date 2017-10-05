@@ -1,4 +1,4 @@
-# Daily Operation Tasks 
+# Common Operational Tasks 
 
 ## Check Status of Backups
 
