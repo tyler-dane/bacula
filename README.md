@@ -2,7 +2,6 @@
 This repository contains instructions and configuration files for installing and using Bacula, an open source backup solution.
 #### Author: [Tyler Hitzeman](https://github.com/tyler-hitzeman)
 
-#
 ### Step 1: Learn about Bacula
 * You should have a general understanding of the following topics before attempting to install and use Bacula:
     * The architecture (i.e., how `bacula-dir`, `bacula-sd`, and `bacula-fd` interact)
@@ -22,14 +21,12 @@ This repository contains instructions and configuration files for installing and
 
 #### Review the sample [Raw Configuration Files](https://github.com/tyler-hitzeman/bacula/tree/master/configs) provided in this repository.
 
-
-#
 ### Step 2: [Install Bacula Server](install-server.md)
 * This tutorial demonstrates how to install Bacula Server on a CentOS 7 system.
-#
+
 ### Step 3: [Install Bacula Client](install-client.md)
 * This tutorial demonstrates install Bacula Client on a CentOS 7 system.
-#
+
 ### Stuck? See if your problem is covered in the [Troubleshooting File](troubleshooting.md)
 
 
