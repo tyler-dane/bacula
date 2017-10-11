@@ -32,6 +32,9 @@
 cd $BCB #/opt/bacula/bin
 bacula-dir -c /opt/bacula/etc/bacula-dir.conf -d100
 ```
+
+----
+
 #### Problem 1: Cannot connect to `bconsole` command line
 
 ##### Problem 1a:
@@ -71,18 +74,24 @@ bacula-dir -c /opt/bacula/etc/bacula-dir.conf -d100
     `mv /usr/sbin/bconsole /usr/sbin/bconsole.bak`
     * Alternatively, you could use a soft/hard link from `/usr/sbin/bconsole` to `/opt/bacula/bin/bconsole`
 
+----
+
     
-#### Problem2: "Waiting on FD" Error when running a backup
+#### Problem 2: "Waiting on FD" Error when running a backup
 * **Possible Cause**: FD cannot communicate back to the Director.
 * **Possible Solution**: Make sure you have the FQDN of the director listed in your bacula-fd.conf file, and not simply the hostname.
     * For example, if your Director's name in your bacula-dir.conf file is `bacula-test.domain.local-dir`, then you should use the same name in your bacula-fd file in the `Name` field for the Director section. Simply using `bacula-test-dir` (hostname + -dir) will not work.
 * **Other possible causes**: Password mismatch
     * See [password-chain](password-chain.jpg) diagram. 
 
-#### Problem3: "Error: bsock.c:223 gethostbyname() for host "client.example.local" failed: ERR=Name or service not known"
-* Possible Cause/Solution: Make sure your FQDN is spelled correctly in the Bacula configs and in your own environment.  
+----
+
+#### Problem3: `Error: bsock.c:223 gethostbyname() for host "client.example.local" failed: ERR=Name or service not known`
+* **Possible Cause/Solution:** Make sure your FQDN is spelled correctly in the Bacula configs and in your own environment.  
         
-#### Problem4: Authentication error when connecting to bconsole:
+----
+
+#### Problem 4: Authentication error when connecting to bconsole:
 * **Description**: Running `bconsole` gives the following error:
 ```
 Director authorization problem.
@@ -90,23 +99,26 @@ Most likely the passwords do not agree.
 If you are using TLS, there may have been a certificate validation error during the TLS handshake.
 Please see http://www.bacula.org/en/rel-manual/Bacula_Freque_Asked_Questi.html#SECTION00260000000000000000 for help.
 ```  
+----
+
 #### Problem 5: Cannot find appendable volumes
 * Description: Running a bacula backup jobs gives the below error:
+
 ```bash
 Example-Job.2017-09-05_11.24.02_06 is waiting. Cannot find any appendable volumes.
 Please use the "label" command to create a new Volume for:
     Storage:      "FileChgr1-Dev1" (/bacula/backup)
     Pool:         Exapmle-Pool
     Media type:   File1
-
 ```
-* Possible Cause:
-* Possible Solution:
 
+* Possible Cause 1: The number of full volumes meets the `Maximum Volumes` value that was set in `pools.conf`. 
+* Possible Solutions:
+    1. Increase the `Maximum Volumes` value
+    2. Purge a volume, delete it from disk, and re-run the backup. 
+    3. Decrease your `Retention Period` so that at least one of the volumes can be automatically recycled.
 
-## TO-DO either add or delete below two lines
-* Possible Cause:
-* Possible Solution:
+----
 
 #### Problem 6: `bconsole` `label` ERROR:
 ##### Error: 
@@ -117,15 +129,19 @@ Sending label command for Volume "TestVol1" Slot 0 ...
 Label command failed for Volume TestVol1.
 Do not forget to mount the drive!!!
 ```
+
 #### Solution 1: Closely compare your `bacula-dir.conf` and `bacula-sd.conf` files
 * For me, I mistyped my hostname originally. After the fix, the `label` command worked fine. I never needed to do any `mount` commands
 #### Potential Solution:
 * Note - I have not verified that this works.
 * Add entry to `/etc/fstab` for `/bacula` 
 
+----
+
 #### Problem 7: `Device File [..] is not open` error
 #### Error when running `* status jobid=<jobid#>`:
-```
+
+```bash
 Device status:
 Autochanger "FileChgr1" with devices:
    "FileChgr1-Dev1" (/bacula/backup)
@@ -138,6 +154,13 @@ Device File: "HP-Drives" (/bacula/backup) is not open.
    Available Space=1.479 TB
 
 ```
+----
+
+#### Problem 8: `Fatal error: Network error with FD during Backup: ERR=No data available `
+
+* **Potential Cause:** 
+* **Potential Solution:**
+
 ## `bacula-fd` ERRORS
 #### Problem: The `bacula-fd` daemon shows the following error:
 ```
@@ -149,8 +172,37 @@ Starting bacula-fd: bacula-fd: error while loading shared libraries: /usr/lib64/
 * **Potential Solution 2**: Run `fsck` operation
 * **Potential Solution 3** Restore from backup or rebuild file system.
 
+----
+#### Problem 9: The following error appears when running a backup job:
 
-#
+```bash 
+Cannot find any appendable volumes.
+Please use the "label" command to create a new Volume for [...]:
+```
+
+- **Potential Cause 1**:
+- **Potential Solution 1**:
+
+#### Problem 10: The following error appears when running a backup job:
+
+```bash
+Device "FileStorage" (/bacula/backup) open but no Bacula volume is currently mounted. Device is BLOCKED waiting for mount of volume "Remote-0051"
+```
+
+- **Potential Solution 1**: Mount all volumes and restart Bacula services
+    
+    ```bash
+    bconsole
+    * mount
+    * exit
+    bac-restart #Only applies if you added this special command to your `.bashrc`. If not, the use the `service` command to restart the fd, sd, and dir.
+    # Test
+    bconsole
+    * run
+    # [...]
+    ```
+
+----
 ### BACULUM GUI TROUBLESHOOTING
 #### Problem: Can't sign in via hostname:9095
 * **Potential Cause 1**: You don't have all needed packages. Sounds obvious, but it is worth checking.
@@ -237,13 +289,13 @@ Error Summary
 #### Potential Cause:
 #### Potential Solution:
 
-#
+----
 ## VNC TROUBLESHOOTING
 ### Problem: Black screen when trying to connect from client and 'gnome-shell killed by SIGTRAP' errors.
 * **Possible Cause**: gnome may not be running on server. 
 * **Possible Solution**: Reboot server, then log in as 'bacula.' Make sure the GUI appears. Then try initiating a connection via TigerVNC again
 
-#
+----
 ## PostgreSQL Troubleshooting:
 #### Potential Envrionment Issues
 * Is postgres in a "standard" location? the ./configure command for bacula takes a flag
