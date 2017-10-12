@@ -173,15 +173,32 @@ Starting bacula-fd: bacula-fd: error while loading shared libraries: /usr/lib64/
 * **Potential Solution 3** Restore from backup or rebuild file system.
 
 ----
-#### Problem 9: The following error appears when running a backup job:
+#### Problem 9: One of the following error appears when running a backup job:
 
 ```bash 
+#Error 1:
 Cannot find any appendable volumes.
 Please use the "label" command to create a new Volume for [...]:
+
+#Error 2 - appears when running `* messages`:
+12-Oct 01:49 server-example.local-sd JobId 339: Job Bamboo.2017-10-11_10.47.20_05 is waiting. Cannot find any appendable volumes.
+Please use the "label" command to create a new Volume for:
+    Storage:      "FileChgr1-Dev1" (/bacula/backup)
+    Pool:         Bamboo
+    Media type:   File1
 ```
 
-- **Potential Cause 1**:
-- **Potential Solution 1**:
+- **Potential Cause 1**: Configuration error
+    - Potential configuration errors:
+        - The number of Full volumes has reached the maximum value set in one of the client configuration files. 
+        - The director is not allowed to auto-label volumes
+    - This could 
+- **Potential Solution 1**: Change configuration, restart bacula, and manually run a test backup job
+- **Potential Solution 2**: Manually label a new volume using the information given in the error.
+    -  When entering values as part of the `label` process, make sure the `Media Type` and `Pool` match the values listed.
+    - Do not include hyphens when manually supplying a volume name
+
+----
 
 #### Problem 10: The following error appears when running a backup job:
 
