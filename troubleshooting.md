@@ -161,6 +161,7 @@ Device File: "HP-Drives" (/bacula/backup) is not open.
 * **Potential Cause:** 
 * **Potential Solution:**
 
+<br><br>
 ## `bacula-fd` ERRORS
 #### Problem: The `bacula-fd` daemon shows the following error:
 ```
@@ -192,7 +193,6 @@ Please use the "label" command to create a new Volume for:
     - Potential configuration errors:
         - The number of Full volumes has reached the maximum value set in one of the client configuration files. 
         - The director is not allowed to auto-label volumes
-    - This could 
 - **Potential Solution 1**: Change configuration, restart bacula, and manually run a test backup job
 - **Potential Solution 2**: Manually label a new volume using the information given in the error.
     -  When entering values as part of the `label` process, make sure the `Media Type` and `Pool` match the values listed.
