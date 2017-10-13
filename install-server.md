@@ -19,7 +19,7 @@ bacula-install-server.md
 * TEST RESTORE OPERATION FOR CLIENT
 * OPTIONAL: INSTALL BACULUM GUI
 
-#
+----
 ## NOTES
 * These steps were tested on CentOS 7.4 and RedHat 7.4 systems.
 * I use `vim`, but feel free to install and use whatever editor you like
@@ -73,6 +73,7 @@ firewall-cmd --reload
 * If your client doesn't already have a Fully Qualified Domain Name (FQDN), assign it one.
 *  I use server.example.local in this tutorial. 
 
+<br><br>
 ## SET UP THE BACULA ENVIRONMENT
 #### Create Bacula user:
 ```bash
