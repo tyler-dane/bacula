@@ -469,6 +469,7 @@ status jobid=#the jobid of the backup #status job=1
 list jobs   #Review the job status column
 ```
 #### Once a backup terminates successfully, run a test restore operation:
+
 ```bash
 bconsole
 restore
@@ -478,8 +479,8 @@ mark * # Selects all files for backup
 done
 yes
 messages
-
 ```
+
 ### Optional: CUSTOMIZE LOCAL BACKUP & RESTORE
 * Now that you have the basic functions of Bacula work on your system, consider customizing the configurations. You could, for example, change the naming conventions for the `FileSets`,  and `Storage` fields to more specifically describe your environment. 
 * After renaming, be sure to re-run the test backup and restore operations
@@ -593,7 +594,7 @@ Job {
 `service bacula-fd restart`
 #### Restart Bacula services on Server:
 `bac-restart`    
-* previously created alias. See ~/.bash_profile
+* previously created alias. See `~/.bash_profile`
 
 `bac-status`
 
@@ -789,7 +790,7 @@ http://server.example.local:9096
 #### See [screenshots](http://www.bacula.org/9.0.x-manuals/en/console/Baculum_API_Web_GUI_Tools.html#SECTION00371000000000000000) for configuration examples
 #### Enter [configuration options](http://www.bacula.org/9.0.x-manuals/en/console/Baculum_API_Web_GUI_Tools.html#SECTION00371000000000000000)
 
-#
+----
 ### INSTALL TIGERVNC
 #### For reference, see Digital Ocean's [How to Install and Configure VNC Remote Access for the Gnome Desktop on CentOS7](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-vnc-remote-access-for-the-gnome-desktop-on-centos-7)
 
