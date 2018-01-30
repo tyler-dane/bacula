@@ -1,5 +1,11 @@
 # Bacula
-This repository contains instructions and configuration files for installing and using Bacula, an open source backup solution.
+
+*"Just as we respect and care for our ancestors, so we must respect and care for our old backups, for one day they may achieve great glory." - [Tao of Backup](http://www.taobackup.com/index.html)*
+
+Backups are important. Bacula, an open-source client/server backup program, may be a good option for those intersted in automating their backups. 
+
+This repository contains instructions and configuration files for installing and using Bacula.
+
 #### Author: [Tyler Hitzeman](https://github.com/tyler-hitzeman)
 ----
 ### Step 1: Learn about Bacula
