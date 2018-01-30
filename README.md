@@ -7,7 +7,9 @@ Backups are important. Bacula, an open-source client/server backup program, may 
 This repository contains instructions and configuration files for installing and using Bacula.
 
 #### Author: [Ty Hitzeman](https://github.com/tyler-hitzeman)
+
 ----
+
 ### Step 1: Learn about Bacula
 * You should have a general understanding of the following topics before attempting to install and use Bacula:
     * The architecture (i.e., how `bacula-dir`, `bacula-sd`, and `bacula-fd` interact)
@@ -26,6 +28,7 @@ This repository contains instructions and configuration files for installing and
 #### Review the [Configuration File Diagram](password-chain.jpg) provided in this repository
 
 #### Review the sample [Raw Configuration Files](https://github.com/tyler-hitzeman/bacula/tree/master/configs) provided in this repository.
+
 -----
 
 ### Step 2: [Install Bacula Server](install-server.md)
