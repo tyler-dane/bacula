@@ -17,7 +17,7 @@ This repository contains instructions and configuration files for installing and
     * What version best meets your needs. I use version 9.0.3.
     * How to develop a suitable [Disaster Recovery Plan](http://www.bacula.org/5.0.x-manuals/en/main/main/Disaster_Recovery_Using_Bac.html)  for you Bacula instance.
 
-#### Read through Bacula's documentation at [blog.bacula.org](http://blog.bacula.org/what-is-bacula/)
+#### Read through Bacula's documentation at [blog.bacula.org]([http://blog.bacula.org/what-is-bacula/])
 
 
 #### Read through [Blue Ocean's Guides](https://www.digitalocean.com/community/tutorial_series/how-to-use-bacula-on-centos-7)
